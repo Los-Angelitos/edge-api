@@ -1,8 +1,14 @@
-﻿class Device:
-    def __init__(self, ip_address, mac_address, state, device_id):
-        self.device_id = device_id
-        self.ip_address = ip_address
-        self.mac_address = mac_address
-        self.state = state
+﻿from peewee import Model, CharField
+from shared.infrastructure.database import db
+
+class Device(Model):
+    device_id = CharField(primary_key=True)
+    ip_address = CharField()
+    mac_address = CharField()
+    state = CharField()
+
+    class Meta:
+        database = db
+        table_name = 'devices'
 
 
