@@ -27,6 +27,13 @@ class MQTTClient:
             print(f"Failed to connect, return code {rc}")
             
     def on_message(self, client, userdata, msg):
+        """
+        aquí se procesan los mensajes recibidos de cada uno de los topics a los que se ha suscrito,
+        de esta manera los devices al publicar un mensaje en el topic correspondiente,
+        el cliente MQTT lo recibe y lo procesa.
+
+        se puede guardar en sqlite para luego de un time delay, enviarlo al fog.
+        """
         print(f"Message received: {msg.topic} {msg.payload.decode()}")
 
     def subscribe_topics(self):
