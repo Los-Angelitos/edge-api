@@ -1,8 +1,17 @@
 ﻿from flask import Flask
 from flasgger import Swagger, swag_from
-from iam.infrastructure.routes import iam as iam_routes
+from dotenv import load_dotenv
 
+from iam.infrastructure.routes import iam as iam_routes
 from shared.infrastructure.database import init_db
+from shared.infrastructure.mqtt_client import MQTTClient
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Initialize MQTT client
+mqtt_client = MQTTClient()
+mqtt_client.loop_start()
 
 app = Flask(__name__)
 app.register_blueprint(iam_routes, url_prefix='/api/v1/iam', name='iam')
