@@ -1,14 +1,13 @@
-﻿from peewee import Model, CharField
-from shared.infrastructure.database import db
+﻿class Device:
+    def __init__(self, id: int, ip_address: str, mac_address: str, state: str):
+        self.id = id
+        self.ip_address = ip_address
+        self.mac_address = mac_address
+        self.state = state
 
-class Device(Model):
-    device_id = CharField(primary_key=True)
-    ip_address = CharField()
-    mac_address = CharField()
-    state = CharField()
-
-    class Meta:
-        database = db
-        table_name = 'devices'
+    def __repr__(self):
+        return f"Device(id={self.id}, ip_address='{self.ip_address}', mac_address='{self.mac_address}', state='{self.state}')"
+        
+    
 
 
