@@ -1,6 +1,4 @@
 ﻿from peewee import *
-
-from iam.domain.entities import Device
 from shared.infrastructure.database import db
 
 class RFIDCard(Model):
