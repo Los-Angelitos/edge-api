@@ -28,8 +28,11 @@ Technologies used:
    ```
 
 ## Usage
-You can access the API at `http://localhost:3000`.
+You can access the API at `http://localhost:3000/apidocs`.
 Also, the host configured is 0.0.0.0 so you can access it from other devices in the same network.
+
+If you want to see the database with SQLite Browser, when the application is running, you can find the database file in the root directory of the project named `sweet_manager.db`.
+Then, open it with SQLite Browser, load it, and you will be able to see the tables and data.
 
 ## Authors
 - [@Los-Angelitos](https://github.com/Los-Angelitos)

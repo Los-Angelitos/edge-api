@@ -1,20 +1,13 @@
 ﻿from flask import Flask
 from flasgger import Swagger, swag_from
-from dotenv import load_dotenv
 
 from iam.infrastructure.routes import iam as iam_routes
+from operations_and_monitoring.interfaces.services import monitoring_api as monitoring_routes
 from shared.infrastructure.database import init_db
-from shared.infrastructure.mqtt_client import MQTTClient
-
-# Load environment variables from .env file
-load_dotenv()
-
-# Initialize MQTT client
-mqtt_client = MQTTClient()
-mqtt_client.loop_start()
 
 app = Flask(__name__)
 app.register_blueprint(iam_routes, url_prefix='/api/v1/iam', name='iam')
+app.register_blueprint(monitoring_routes, url_prefix='/api/v1/monitoring', name='monitoring')
 
 swagger = Swagger(app, template={
     "swagger": "2.0",
