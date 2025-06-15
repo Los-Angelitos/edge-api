@@ -19,6 +19,3 @@ def auth():
     """
     # Here you would implement your authentication logic
     return jsonify({"message": "User authenticated successfully"}), 200
-
-
-
