@@ -32,3 +32,5 @@ build/
 # Secretos o variables locales (si usas)
 .env
 
+# Base de datos local
+sweet_manager.db
