@@ -7,37 +7,52 @@ monitoring_api = Blueprint('monitoring', __name__)
 
 monitoring_service = MonitoringService()
 
-@monitoring_api.route('/thermostats', methods=['GET'])
+@monitoring_api.route('/thermostats', methods=['POST'])
 @swag_from({
     'tags': ['Monitoring'],
 })
-def get_thermostat_state():
+def recover_last_changes_temperature_room():
     """
-    Retrieves the state of a thermostat by its IP address.
-    
-    :return: JSON response with the thermostat state.
-
+    Retrieve the last changes in temperature for a specific room.
     ---
     parameters:
-      - in: query
-        name: ip_address
-        type: string
+      - in: body
+        name: body
         required: true
+        schema:
+          type: object
+          properties:
+            device_id:
+              type: string
+              description: The ID of the device to query.
+            api_key:
+              type: string
+              description: The API key for authentication.
+            current_temperature:
+              type: integer
+              description: The current temperature to compare against.
     responses:
         200:
-            description: The state of the thermostat.
-            schema:
-            type: object
-            properties:
-                state:
-                type: boolean
-                description: True if the thermostat is on, False otherwise.
+            description: A dictionary containing the last changes in temperature.
         400:
-            description: Bad request if the IP address is not provided.
+            description: Invalid request, device_id and api_key are required.
+        500:
+            description: Internal server error.
     """
-    ip_address = request.args.get('ip_address')
-    if not ip_address:
-        return jsonify({"error": "IP address is required"}), 400
 
-    state = monitoring_service.get_state_thermostat(ip_address)
-    return jsonify({"ip_address": ip_address, "state": state}), 200
+    # recover from body
+    data = request.get_json()
+    if not data or 'device_id' not in data or 'api_key' not in data:
+        return jsonify({'error': 'Invalid request, device_id and api_key are required'}), 400
+    
+    device_id = data['device_id']
+    api_key = data['api_key']
+    current_temperature = data.get('current_temperature', None)
+
+    print(data)
+
+    try:
+        result = monitoring_service.last_changes_room(current_temperature, device_id)
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
