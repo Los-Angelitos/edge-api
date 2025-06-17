@@ -7,37 +7,39 @@ monitoring_api = Blueprint('monitoring', __name__)
 
 monitoring_service = MonitoringService()
 
-@monitoring_api.route('/thermostats', methods=['GET'])
+@monitoring_api.route('/thermostats', methods=['POST'])
 @swag_from({
     'tags': ['Monitoring'],
 })
-def get_thermostat_state():
+def recover_last_changes_temperature_room():
     """
-    Retrieves the state of a thermostat by its IP address.
+    Retrieve the last changes in temperature for a specific room.
+    --
+    This endpoint allows you to get the last changes in temperature for a specific room
+    by providing the device ID and API key.
+
+    **Request Body:**
+    ```json
+    {
+        "device_id": "string",
+        "api_key": "string",
+        "current_temperature": int
+    }
+    """
+
+    # recover from body
+    data = request.get_json()
+    if not data or 'device_id' not in data or 'api_key' not in data:
+        return jsonify({'error': 'Invalid request, device_id and api_key are required'}), 400
     
-    :return: JSON response with the thermostat state.
+    device_id = data['device_id']
+    api_key = data['api_key']
+    current_temperature = data.get('current_temperature', None)
 
-    ---
-    parameters:
-      - in: query
-        name: ip_address
-        type: string
-        required: true
-    responses:
-        200:
-            description: The state of the thermostat.
-            schema:
-            type: object
-            properties:
-                state:
-                type: boolean
-                description: True if the thermostat is on, False otherwise.
-        400:
-            description: Bad request if the IP address is not provided.
-    """
-    ip_address = request.args.get('ip_address')
-    if not ip_address:
-        return jsonify({"error": "IP address is required"}), 400
+    print(data)
 
-    state = monitoring_service.get_state_thermostat(ip_address)
-    return jsonify({"ip_address": ip_address, "state": state}), 200
+    try:
+        result = monitoring_service.last_changes_room(current_temperature, device_id)
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

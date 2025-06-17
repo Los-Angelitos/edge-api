@@ -4,11 +4,13 @@ class MonitoringService:
     def __init__(self):
         self.repository = MonitoringRepository()
 
-    def get_state_thermostat(self, ip_address: str) -> bool:
+    def last_changes_room(self, current_temperature: str, device_id: str):
         """
-        Retrieves the state of a thermostat by its IP address.
+        Retrieve the last changes in temperature for a specific room.
         
-        :param ip_address: The IP address of the thermostat.
-        :return: True if the thermostat is on, False otherwise.
+        :param device_id: The ID of the device to query.
+        :param api_key: The API key for authentication.
+        :return: A dictionary containing the last changes in temperature.
         """
-        return self.repository.get_state_thermostat(ip_address)
+
+        return self.repository.get_last_changes_room(current_temperature, device_id)
