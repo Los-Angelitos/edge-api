@@ -14,17 +14,30 @@ monitoring_service = MonitoringService()
 def recover_last_changes_temperature_room():
     """
     Retrieve the last changes in temperature for a specific room.
-    --
-    This endpoint allows you to get the last changes in temperature for a specific room
-    by providing the device ID and API key.
-
-    **Request Body:**
-    ```json
-    {
-        "device_id": "string",
-        "api_key": "string",
-        "current_temperature": int
-    }
+    ---
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          properties:
+            device_id:
+              type: string
+              description: The ID of the device to query.
+            api_key:
+              type: string
+              description: The API key for authentication.
+            current_temperature:
+              type: integer
+              description: The current temperature to compare against.
+    responses:
+        200:
+            description: A dictionary containing the last changes in temperature.
+        400:
+            description: Invalid request, device_id and api_key are required.
+        500:
+            description: Internal server error.
     """
 
     # recover from body
