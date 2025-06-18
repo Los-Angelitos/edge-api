@@ -86,7 +86,7 @@ def validate_access():
             }), 400
 
         # Validar acceso
-        result = inventory_service.validate_access(device_id, api_key)
+        result = inventory_service.validate_access(device_id, api_key, room_id, rfid_uid)
 
         return jsonify(result), 200
 

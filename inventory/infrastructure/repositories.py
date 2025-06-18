@@ -49,6 +49,8 @@ class RFIDCardRepository:
             rfid_uid=rfid_card.rfid_uid
         )
 
+
+
     @staticmethod
     def get_or_create_test_rfid() -> RFIDCard:
         device_id = str(Utilities.generate_device_id())
