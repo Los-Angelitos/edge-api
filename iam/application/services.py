@@ -13,6 +13,9 @@ class AuthApplicationService:
         device: Optional[Device] = self.device_repository.find_by_id_and_api_key(device_id, api_key)
         return self.auth_service.authenticate(device)
 
+    def create_device(self, device_id: str, api_key: str) -> Device:
+        return self.device_repository.create(device_id, api_key)
+
     def get_or_create_test_device(self) -> Device:
         return self.device_repository.get_or_create_test_device()
 

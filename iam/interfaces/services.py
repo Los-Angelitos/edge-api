@@ -14,3 +14,4 @@ def authenticate_request():
     if not auth_service.authenticate(device_id, api_key):
         return jsonify({"error": "Invalid device_id or API key"}), 401
     return None
+
