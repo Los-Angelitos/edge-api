@@ -2,16 +2,24 @@
 import requests
 from datetime import datetime
 
-from shared.room_config import ROOM_ID
+from shared.room_config import ROOM_ID, FOG_API_URL
 from operations_and_monitoring.infrastructure.models import Thermostat as ThermostatModel
 from shared.infrastructure.database import db
+
+AUTH_ENDPOINT = f"{FOG_API_URL}"
+DEVICES_ENDPOINT = f"{FOG_API_URL}"
+
+EMAIL = "iot@manager.com"
+PASSWORD = "string"
+ROLE = 1
 
 
 def populate_thermostats():
     db.connect()
 
     print(f"[Population] Fetching thermostats for room_id: {ROOM_ID}")
-    url = f"https://tu-api.com/thermostats?room_id={ROOM_ID}"
+    url = f"{FOG_API_URL}/monitoring/devices/thermostats/{ROOM_ID}"
+
     response = requests.get(url)
 
     if response.status_code != 200:

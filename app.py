@@ -2,6 +2,8 @@
 from flasgger import Swagger, swag_from
 
 from iam.infrastructure.routes import iam as iam_routes
+from inventory.infrastructure.population import populate_rfid_cards
+from operations_and_monitoring.infrastructure.population import populate_thermostats
 from operations_and_monitoring.interfaces.services import monitoring_api as monitoring_routes
 from inventory.interfaces.services import inventory_api as inventory_routes
 from shared.infrastructure.database import init_db
@@ -23,6 +25,10 @@ swagger = Swagger(app, template={
         }
     }}
 )
+
+populate_rfid_cards()
+populate_thermostats()
+
 
 init_db()
 

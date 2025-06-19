@@ -2,20 +2,22 @@
 import requests
 from datetime import datetime
 
-from shared.room_config import ROOM_ID
+from shared.room_config import ROOM_ID, FOG_API_URL
 from iam.infrastructure.models import Device as DeviceModel
 from shared.infrastructure.database import db
+
 
 
 def populate_devices():
     db.connect()
 
-    print(f"[Population] Fetching devices for room_id: {ROOM_ID}")
-    url = f"https://tu-api.com/devices?room_id={ROOM_ID}"
-    response = requests.get(url)
+    print(f"[Population] Fetching thermostats for room_id: {ROOM_ID}")
+    url = f"{FOG_API_URL}/monitoring/devices/thermostats"
+    params = {"room_id": ROOM_ID}
+    response = requests.get(url, params=params)
 
     if response.status_code != 200:
-        print(f"[Population] Error fetching devices: {response.status_code}")
+        print(f"[Population] Error fetching thermostats: {response.status_code}")
         db.close()
         return
 

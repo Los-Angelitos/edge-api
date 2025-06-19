@@ -1,5 +1,7 @@
 from operations_and_monitoring.infrastructure.models import Thermostat as ThermostatModel, SmokeSensor as SmokeSensorModel
 from operations_and_monitoring.domain.entities import Thermostat, SmokeSensor
+from shared.infrastructure.database import db
+
 
 class MonitoringRepository:
     @staticmethod
@@ -24,6 +26,8 @@ class MonitoringRepository:
 
         except ThermostatModel.DoesNotExist:
             return None
+
+
 
     def get_last_changes_room(self, current_temperature: str, device_id: str):
         """

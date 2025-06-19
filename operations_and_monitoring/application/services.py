@@ -1,4 +1,7 @@
 from operations_and_monitoring.infrastructure.repositories import MonitoringRepository
+from shared.infrastructure.database import db
+from operations_and_monitoring.infrastructure.models import Thermostat
+
 
 class MonitoringService:
     def __init__(self):
@@ -15,6 +18,14 @@ class MonitoringService:
         :return: A dictionary with the updated thermostat data or None if not found.
         """
         return self.repository.update_thermostat_state(device_id, api_key, room_id, state, current_temperature)
+
+    def unlock_all_thermostats(self):
+        try:
+            query = Thermostat.update(state=True)
+            rows_updated = query.execute()
+            print(f"[Repository] {rows_updated} thermostats updated to unlocked.")
+        except Exception as e:
+            print(f"[Repository] Error updating thermostats: {e}")
 
     def last_changes_room(self, current_temperature: str, device_id: str):
         """

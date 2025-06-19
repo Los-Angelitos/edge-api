@@ -2,10 +2,12 @@ from flask import Blueprint, request, jsonify
 from flasgger import swag_from
 
 from inventory.application.services import InventoryApplicationService
+from operations_and_monitoring.application.services import MonitoringService
 
 inventory_api = Blueprint('inventory', __name__)
 
 inventory_service = InventoryApplicationService()
+monitoring_service = MonitoringService()
 
 @inventory_api.route('/validate-access', methods=['POST'])
 @swag_from({
@@ -87,6 +89,9 @@ def validate_access():
 
         # Validar acceso
         result = inventory_service.validate_access(device_id, api_key, room_id, rfid_uid)
+
+        if result.get("access") is True:
+            monitoring_service.unlock_all_thermostats()
 
         return jsonify(result), 200
 

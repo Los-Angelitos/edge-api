@@ -11,7 +11,8 @@ def populate_rfid_cards():
     db.connect()
 
     print(f"[Population] Fetching RFID cards for room_id: {ROOM_ID}")
-    url = f"{FOG_API_URL}/monitoring/devices/rfid"
+    url = f"{FOG_API_URL}/monitoring/devices/rfid-readers/{ROOM_ID}"
+
     response = requests.get(url)
 
     if response.status_code != 200:
@@ -26,7 +27,7 @@ def populate_rfid_cards():
         try:
             device_id = item["device_id"]
             api_key = item["api_key"]
-            rfid_uid = item["rfid_uid"]
+            rfid_uid = item["u_id"]
 
             RFIDCard.get_or_create(
                 device_id=device_id,
