@@ -1,7 +1,13 @@
-﻿class Device:
-    def __init__(self, device_id: str, api_key:str):
+﻿from datetime import datetime
+from typing import Optional
+
+
+class Device:
+    def __init__(self, device_id: str, api_key: str, created_at: Optional[datetime] = None):
         self.device_id = device_id
         self.api_key = api_key
+        self.created_at = created_at or datetime.now()
+
 
     def to_dict(self):
         return {
