@@ -56,3 +56,88 @@ def recover_last_changes_temperature_room():
         return jsonify(result), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@monitoring_api.route('/validate-access', methods=['POST'])
+@swag_from({
+    'tags': ['Smoke Sensors'],
+    'parameters': [
+        {
+            'name': 'body',
+            'in': 'body',
+            'required': True,
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'device_id': {'type': 'string'},
+                    'api_key': {'type': 'string'},
+                    'current_temperature': {'type': 'string'}
+                },
+                'required': ['device_id', 'api_key', 'current_temperature']
+            }
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Access validation successful',
+            'content': {
+                'application/json': {
+                    'schema': {
+                        'type': 'object',
+                        'properties': {
+                            'access': {
+                                'type': 'boolean',
+                                'description': 'Whether access is granted or not'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        400: {'description': 'Bad request - missing required fields'},
+        401: {'description': 'Unauthorized - invalid device credentials'},
+        500: {'description': 'Internal server error'}
+    }
+})
+def validate_access():
+    """
+    Validates smoke sensor access and communicates with fog service.
+
+    This endpoint authenticates the smoke sensor device and sends the access
+    validation request to the fog service.
+    ---
+    """
+    try:
+        # Obtener datos del request JSON
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"error": "Request body is required"}), 400
+
+        # Ahora api_key también viene en el body
+        device_id = data.get('device_id')
+        api_key = data.get('api_key')
+        current_temperature = data.get('current_temperature')
+
+        missing_fields = []
+        if not device_id:
+            missing_fields.append("device_id")
+        if not api_key:
+            missing_fields.append("api_key")
+        if not current_temperature:
+            missing_fields.append("current_temperature")
+
+        if missing_fields:
+            return jsonify({
+                "error": f"Missing required fields: {', '.join(missing_fields)}"
+            }), 400
+
+        # Validar acceso
+        result = monitoring_service.validate_access(device_id, api_key, current_temperature)
+
+        return jsonify(result), 200
+
+    except Exception as e:
+        return jsonify({
+            "access": False,
+            "error": f"Internal server error: {str(e)}"
+        }), 500
