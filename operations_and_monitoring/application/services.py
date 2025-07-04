@@ -44,7 +44,7 @@ class MonitoringService:
 
         # Step 2: Validate with fog service
         try:
-            fog_url = f"{FOG_API_URL}/monitoring/smoke-sensors/validate"
+            fog_url = f"{FOG_API_URL}/notifications"
             payload = {
                 "current_value": current_value,
                 "device_id": device_id,
