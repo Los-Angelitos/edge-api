@@ -5,6 +5,7 @@ from datetime import datetime
 from shared.room_config import ROOM_ID, FOG_API_URL
 from inventory.infrastructure.models import RFIDCard
 from shared.infrastructure.database import db
+from iam.infrastructure.models import Device as DeviceModel
 
 
 def populate_rfid_cards():
@@ -38,6 +39,15 @@ def populate_rfid_cards():
                     "created_at": datetime.now()
                 }
             )
+
+            DeviceModel.get_or_create(
+                device_id=device_id,
+                defaults={
+                    "api_key": api_key,
+                    "created_at": datetime.now()
+                }
+            )
+
             created_count += 1
 
         except KeyError as e:
