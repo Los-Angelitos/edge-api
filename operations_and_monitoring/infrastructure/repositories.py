@@ -75,25 +75,25 @@ class SmokeSensorRepository:
                 device_id=sensor.device_id,
                 api_key=sensor.api_key,
                 room_id=sensor.room_id,
-                current_temperature=sensor.current_temperature
+                current_value=sensor.current_value
             )
         except SmokeSensorModel.DoesNotExist:
             return None
 
     @staticmethod
-    def create(device_id: str, api_key: str, room_id: int, current_temperature: float) -> SmokeSensor:
+    def create(device_id: str, api_key: str, room_id: int, current_value: float) -> SmokeSensor:
         sensor = SmokeSensorModel.create(
             device_id=device_id,
             api_key=api_key,
             room_id=room_id,
-            current_temperature=current_temperature,
+            current_value=current_value,
             created_at=datetime.now()
         )
         return SmokeSensor(
             device_id=sensor.device_id,
             api_key=sensor.api_key,
             room_id=sensor.room_id,
-            current_temperature=sensor.current_temperature
+            current_value=sensor.current_value
         )
 
     @staticmethod
@@ -101,14 +101,14 @@ class SmokeSensorRepository:
         device_id = str(Utilities.generate_device_id())
         api_key = Utilities.generate_api_key()
         room_id = 101
-        current_temperature = 23.0
+        current_value = 25.0
         
         sensor, created = SmokeSensorModel.get_or_create(
             device_id=device_id,
             defaults={
                 'api_key': api_key,
                 'room_id': room_id,
-                'current_temperature': current_temperature,
+                'current_value': current_value,
                 'created_at': datetime.now()
             }
         )
@@ -117,5 +117,5 @@ class SmokeSensorRepository:
             device_id=sensor.device_id,
             api_key=sensor.api_key,
             room_id=sensor.room_id,
-            current_temperature=sensor.current_temperature
+            current_value=sensor.current_value
         )

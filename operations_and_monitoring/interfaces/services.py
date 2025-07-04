@@ -20,9 +20,10 @@ monitoring_service = MonitoringService()
                 'properties': {
                     'device_id': {'type': 'string'},
                     'api_key': {'type': 'string'},
-                    'current_temperature': {'type': 'number'}
+                    'room_id': {'type': 'integer'},
+                    'current_value': {'type': 'number'}
                 },
-                'required': ['device_id', 'api_key', 'current_temperature']
+                'required': ['device_id', 'api_key', 'room_id', 'current_value']
             }
         }
     ],
@@ -65,15 +66,18 @@ def validate_smoke_sensor_access():
 
         device_id = data.get('device_id')
         api_key = data.get('api_key')
-        current_temperature = data.get('current_temperature')
+        room_id = data.get('room_id')
+        current_value = data.get('current_value')
 
         missing_fields = []
         if not device_id:
             missing_fields.append("device_id")
         if not api_key:
             missing_fields.append("api_key")
-        if current_temperature is None:
-            missing_fields.append("current_temperature")
+        if room_id is None:
+            missing_fields.append("room_id")
+        if current_value is None:
+            missing_fields.append("current_value")
 
         if missing_fields:
             return jsonify({
@@ -81,7 +85,7 @@ def validate_smoke_sensor_access():
             }), 400
 
         # Validate access
-        result = monitoring_service.validate_smoke_sensor_access(device_id, api_key, current_temperature)
+        result = monitoring_service.validate_smoke_sensor_access(device_id, api_key, room_id, current_value)
 
         return jsonify(result), 200
 

@@ -13,17 +13,18 @@ class MonitoringService:
         self.smoke_sensor_repository = SmokeSensorRepository()
         self.auth_service = AuthApplicationService()
 
-    def validate_smoke_sensor_access(self, device_id: str, api_key: str, current_temperature: float) -> dict:
+    def validate_smoke_sensor_access(self, device_id: str, api_key: str, room_id: int, current_value: float) -> dict:
         """
         Validates smoke sensor access and communicates with fog service.
         
         :param device_id: ID of the smoke sensor device
         :param api_key: API key for authentication
-        :param current_temperature: Current temperature reading
+        :param room_id: Room ID where the sensor is located
+        :param current_value: Current sensor reading value
         :return: Dictionary with access validation result
         """
         print("[MonitoringService] ==== INICIANDO VALIDACIÓN DE SENSOR DE HUMO ====")
-        print(f"[MonitoringService] Parámetros: device_id={device_id}, api_key={api_key}, temp={current_temperature}")
+        print(f"[MonitoringService] Parámetros: device_id={device_id}, api_key={api_key}, room_id={room_id}, current_value={current_value}")
 
         # Step 1: Authenticate device
         print("[MonitoringService] Verificando autenticación del dispositivo...")
@@ -45,8 +46,10 @@ class MonitoringService:
         try:
             fog_url = f"{FOG_API_URL}/monitoring/smoke-sensors/validate"
             payload = {
+                "current_value": current_value,
                 "device_id": device_id,
-                "current_temperature": current_temperature
+                "room_id": room_id
+                
             }
 
             print(f"[MonitoringService] Enviando a fog service: {fog_url}")
