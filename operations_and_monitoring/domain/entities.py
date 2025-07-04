@@ -1,19 +1,38 @@
-﻿from iam.domain.entities import Device
+﻿class Thermostat:
+    def __init__(self, device_id: str, api_key: str, room_id: int, 
+                 current_temperature: float, target_temperature: float):
+        self.device_id = device_id
+        self.api_key = api_key
+        self.room_id = room_id
+        self.current_temperature = current_temperature
+        self.target_temperature = target_temperature
 
-class Thermostat(Device):
-    def __init__(self, id, device_id, api_key ,ip_address, mac_address, state, temperature):
-        super().__init__(device_id, api_key)
-        self.id = id
-        self.ip_address = ip_address
-        self.mac_address = mac_address
-        self.state = state
-        self.temperature = temperature
+    def to_dict(self):
+        return {
+            'device_id': self.device_id,
+            'api_key': self.api_key,
+            'room_id': self.room_id,
+            'current_temperature': self.current_temperature,
+            'target_temperature': self.target_temperature
+        }
 
-class SmokeSensor(Device):
-    def __init__(self, id, device_id, api_key, ip_address, mac_address, state, last_analogic_value):
-        super().__init__(device_id, api_key)
-        self.id = id
-        self.ip_address = ip_address
-        self.mac_address = mac_address
-        self.state = state
-        self.last_analogic_value = last_analogic_value
+    def __repr__(self):
+        return f"Thermostat(device_id='{self.device_id}', room_id={self.room_id}, current_temp={self.current_temperature}°C, target_temp={self.target_temperature}°C)"
+
+class SmokeSensor:
+    def __init__(self, device_id: str, api_key: str, room_id: int, current_temperature: float):
+        self.device_id = device_id
+        self.api_key = api_key
+        self.room_id = room_id
+        self.current_temperature = current_temperature
+
+    def to_dict(self):
+        return {
+            'device_id': self.device_id,
+            'api_key': self.api_key,
+            'room_id': self.room_id,
+            'current_temperature': self.current_temperature
+        }
+
+    def __repr__(self):
+        return f"SmokeSensor(device_id='{self.device_id}', room_id={self.room_id}, current_temp={self.current_temperature}°C)"
