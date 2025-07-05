@@ -1,4 +1,4 @@
-﻿from peewee import Model, CharField, IntegerField, DateTimeField
+﻿from peewee import Model, CharField, IntegerField, DateTimeField, AutoField
 from shared.infrastructure.database import db
 
 class RFIDCard(Model):
@@ -11,3 +11,8 @@ class RFIDCard(Model):
     class Meta:
         database = db
         table_name = 'rfid_cards'
+        # Opcional: agregar índices únicos si es necesario
+        indexes = (
+            # Crear un índice único para la combinación de device_id y rfid_uid
+            (('device_id', 'rfid_uid'), True),
+        )

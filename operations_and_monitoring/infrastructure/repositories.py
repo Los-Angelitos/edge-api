@@ -1,64 +1,121 @@
+from typing import Optional
+from datetime import datetime
+
 from operations_and_monitoring.infrastructure.models import Thermostat as ThermostatModel, SmokeSensor as SmokeSensorModel
 from operations_and_monitoring.domain.entities import Thermostat, SmokeSensor
-from shared.infrastructure.database import db
+from shared.infrastructure.utilities import Utilities
 
-
-class MonitoringRepository:
+class ThermostatRepository:
     @staticmethod
-    def update_thermostat_state(device_id: str, api_key: str, room_id: int, new_state: str):
+    def find_by_device_id(device_id: str) -> Optional[Thermostat]:
         try:
-            thermostat = ThermostatModel.get(
-                (ThermostatModel.device_id == device_id) &
-                (ThermostatModel.api_key == api_key) &
-                (ThermostatModel.room_id == room_id)
+            thermostat = ThermostatModel.get(ThermostatModel.device_id == device_id)
+            return Thermostat(
+                device_id=thermostat.device_id,
+                api_key=thermostat.api_key,
+                room_id=thermostat.room_id,
+                current_temperature=thermostat.current_temperature,
+                target_temperature=thermostat.target_temperature
             )
-
-            thermostat.state = new_state  # Solo actualizamos 'state'
-            thermostat.save()
-
-            return {
-                "id": thermostat.id,
-                "ip_address": thermostat.ip_address,
-                "mac_address": thermostat.mac_address,
-                "state": thermostat.state,
-                "temperature": thermostat.temperature
-            }
-
         except ThermostatModel.DoesNotExist:
             return None
 
-
-
-    def get_last_changes_room(self, current_temperature: str, device_id: str):
-        """
-        Retrieve the last changes in temperature for a specific room.
-        
-        :param current_temperature: The current temperature to compare against.
-        :param device_id: The ID of the device to query.
-        :return: A dictionary containing the last changes in temperature.
-        """
-        thermostat = ThermostatModel.select().where(
-            (ThermostatModel.device_id == device_id)
-        ).first()
-
-        print(f"Retrieved thermostat: {thermostat}")
-
-        if not thermostat:
-            raise ValueError("Device not found")
-
-        thermostat_entity = Thermostat(
-            id=thermostat.id,
+    @staticmethod
+    def create(device_id: str, api_key: str, room_id: int, 
+               current_temperature: float, target_temperature: float) -> Thermostat:
+        thermostat = ThermostatModel.create(
+            device_id=device_id,
+            api_key=api_key,
+            room_id=room_id,
+            current_temperature=current_temperature,
+            target_temperature=target_temperature,
+            created_at=datetime.now()
+        )
+        return Thermostat(
             device_id=thermostat.device_id,
             api_key=thermostat.api_key,
-            ip_address=thermostat.ip_address,
-            mac_address=thermostat.mac_address,
-            state=thermostat.state,
-            temperature=thermostat.temperature,
+            room_id=thermostat.room_id,
+            current_temperature=thermostat.current_temperature,
+            target_temperature=thermostat.target_temperature
         )
 
-        return {
-            'device_id': device_id,
-            'current_temperature': thermostat_entity.temperature,
-            'state': thermostat_entity.state,
-        }
-    
+    @staticmethod
+    def get_or_create_test_thermostat() -> Thermostat:
+        device_id = str(Utilities.generate_device_id())
+        api_key = Utilities.generate_api_key()
+        room_id = 101
+        current_temperature = 22.5
+        target_temperature = 24.0
+        
+        thermostat, created = ThermostatModel.get_or_create(
+            device_id=device_id,
+            defaults={
+                'api_key': api_key,
+                'room_id': room_id,
+                'current_temperature': current_temperature,
+                'target_temperature': target_temperature,
+                'created_at': datetime.now()
+            }
+        )
+        
+        return Thermostat(
+            device_id=thermostat.device_id,
+            api_key=thermostat.api_key,
+            room_id=thermostat.room_id,
+            current_temperature=thermostat.current_temperature,
+            target_temperature=thermostat.target_temperature
+        )
+
+class SmokeSensorRepository:
+    @staticmethod
+    def find_by_device_id(device_id: str) -> Optional[SmokeSensor]:
+        try:
+            sensor = SmokeSensorModel.get(SmokeSensorModel.device_id == device_id)
+            return SmokeSensor(
+                device_id=sensor.device_id,
+                api_key=sensor.api_key,
+                room_id=sensor.room_id,
+                current_value=sensor.current_value
+            )
+        except SmokeSensorModel.DoesNotExist:
+            return None
+
+    @staticmethod
+    def create(device_id: str, api_key: str, room_id: int, current_value: float) -> SmokeSensor:
+        sensor = SmokeSensorModel.create(
+            device_id=device_id,
+            api_key=api_key,
+            room_id=room_id,
+            current_value=current_value,
+            created_at=datetime.now()
+        )
+        return SmokeSensor(
+            device_id=sensor.device_id,
+            api_key=sensor.api_key,
+            room_id=sensor.room_id,
+            current_value=sensor.current_value
+        )
+
+    @staticmethod
+    def get_or_create_test_smoke_sensor() -> SmokeSensor:
+        device_id = str(Utilities.generate_device_id())
+        api_key = Utilities.generate_api_key()
+        room_id = 101
+        current_value = 25.0
+        
+        sensor, created = SmokeSensorModel.get_or_create(
+            device_id=device_id,
+            defaults={
+                'api_key': api_key,
+                'room_id': room_id,
+                'current_value': current_value,
+                'created_at': datetime.now()
+            }
+        )
+        
+        return SmokeSensor(
+            device_id=sensor.device_id,
+            api_key=sensor.api_key,
+            room_id=sensor.room_id,
+            current_value=sensor.current_value
+        )
