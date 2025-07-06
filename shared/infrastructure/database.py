@@ -8,6 +8,7 @@ def init_db():
     from iam.infrastructure.models import Device
 
     db.connect()
+
     db.create_tables([Thermostat, SmokeSensor, RFIDCard, Device], safe=True)
 
-    print("Database initialized successfully.")
+    print("Database re-initialized successfully.")

@@ -1,11 +1,13 @@
 from peewee import Model, CharField, DateTimeField
-
+import uuid
 from shared.infrastructure.database import db
 
+
 class Device(Model):
-    device_id   = CharField(primary_key=True)
-    api_key     = CharField()
-    created_at  = DateTimeField()
+    id         = CharField(primary_key=True, default=lambda: str(uuid.uuid4()))
+    device_id  = CharField()
+    api_key    = CharField()
+    created_at = DateTimeField()
     class Meta:
-        database    = db
-        table_name  = 'devices'
+        database   = db
+        table_name = 'devices'
